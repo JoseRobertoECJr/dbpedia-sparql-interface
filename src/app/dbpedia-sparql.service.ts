@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { UrlParamEncodingService } from './url-param-encoding.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,8 @@ export class DbpediaSparqlService {
   /**
    * get SparQL DBPedia Results
    * */
-  public getSparQL(query: string) {
-    return this.http.get(
+  public getSparQL(query: string): Observable<any> {
+    return this.http.get<any>(
       'https://dbpedia.org/sparql',
       {
         params: new HttpParams({

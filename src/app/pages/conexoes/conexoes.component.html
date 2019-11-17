@@ -1,7 +1,5 @@
-<div>
-<textarea (keydown.enter)="search()" [(ngModel)]='sparqlQuery'></textarea>
-</div>
+<div id="mynetwork"></div>
 
-<div>
-{{result}}
+<div id="query-area">
+    <textarea (keydown.enter)="search(0)" [(ngModel)]='sparqlQuery'></textarea>
 </div>
