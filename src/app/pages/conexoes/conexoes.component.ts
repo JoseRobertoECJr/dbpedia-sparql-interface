@@ -153,7 +153,6 @@ export class ConexoesComponent implements OnInit {
         return { id: idx, label: label, group: "lableNodes" }
       })
 
-
       this.res = this.res.concat(labelNodes)
       res = res.concat(labelNodes)
       nodes = nodes.concat(labelNodes)
