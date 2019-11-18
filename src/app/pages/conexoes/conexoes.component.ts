@@ -86,7 +86,7 @@ export class ConexoesComponent implements OnInit {
       const index = properties.nodes.pop();
       console.log(index)
 
-      if(!index)
+      if(index == undefined || index == null)
         return
 
         this.zoomIn(index)
