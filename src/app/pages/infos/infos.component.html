@@ -31,14 +31,14 @@
 <table>
     <tr *ngFor="let ob of res">
         <td>
-            <a *ngIf="ob.uri" [href]="ob.uri">{{ob.label}}</a>
+            <a target="_blank" *ngIf="ob.uri" [href]="ob.uri">{{ob.label}}</a>
             <a *ngIf="!ob.uri">{{ob.label}}</a>
         </td>
         <td>
             <div *ngFor="let node of ob.nodes">
-                <a *ngIf="node.value.type == 'uri'" [href]="node.value.value">{{node.value.value}}</a>
-                <a *ngIf="node.value.type == 'typed-literal'" [href]="node.value.datatype">{{node.value.value}}</a>
-                <a *ngIf="node.value.type == 'literal'">{{node.label}}</a>
+                <a target="_blank" *ngIf="node.value.type == 'uri'" [href]="node.value.value">{{node.label}}</a>
+                <a target="_blank" *ngIf="node.value.type == 'typed-literal'" [href]="node.value.datatype">{{node.label}}</a>
+                <a target="_blank" *ngIf="node.value.type == 'literal'">{{node.label}}</a>
             </div>
         </td>
     </tr>
