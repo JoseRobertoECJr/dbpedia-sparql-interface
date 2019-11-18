@@ -22,14 +22,14 @@ export const graphOptions = {
             }
         }
     },
-    physics: {
-        hierarchicalRepulsion: {
-            centralGravity: 0.0,
-            springLength: 100,
-            springConstant: 0.001,
-            nodeDistance: 100,
-            damping: 0.09
-        },
-        solver: 'hierarchicalRepulsion'
-    }
+    // physics: {
+    //     hierarchicalRepulsion: {
+    //         centralGravity: 0.0,
+    //         springLength: 100,
+    //         springConstant: 0.001,
+    //         nodeDistance: 100,
+    //         damping: 0.09
+    //     },
+    //     solver: 'hierarchicalRepulsion'
+    // }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DbpediaSparqlService } from 'src/app/dbpedia-sparql.service';
 import { Network } from "vis";
 import { graphOptions } from "src/app/pages/conexoes/graph-options"
+import { findLast } from '@angular/compiler/src/directive_resolver';
 
 @Component({
   selector: 'app-conexoes',
@@ -10,6 +11,7 @@ import { graphOptions } from "src/app/pages/conexoes/graph-options"
 })
 export class ConexoesComponent implements OnInit {
 
+  status: string
   network: Network
 
   type: string
@@ -25,7 +27,7 @@ export class ConexoesComponent implements OnInit {
   buildQuery(){
     let query =
       `
-        SELECT DISTINCT ?obj ?prop (SAMPLE(?value) AS ?value) WHERE {
+        SELECT DISTINCT ?obj ?prop ?value WHERE {
                         ?obj a dbo:${this.type};
                         rdfs:label ?name;
                         ?prop ?value.
@@ -39,13 +41,17 @@ export class ConexoesComponent implements OnInit {
       if(this.prop)
         query += ` filter( regex( str(?prop), "${this.prop}") ) `;
 
-      query += ` } GROUP BY ?obj ?prop`
+      query += ` } `
       return query;
   }
 
 
   constructor(private dbpediaSparqlService: DbpediaSparqlService) {
     this.lastIndex = 0
+    this.status = "Sem processamento"
+    this.res = []
+    this.edges = []
+    this.nodes = []
   }
 
   initGraph(nodes, edges){
@@ -60,11 +66,19 @@ export class ConexoesComponent implements OnInit {
 
     this.network = new Network(container, data, options);
 
-    this.network.on( 'click', (properties) => {
-
+    this.network.on('doubleClick', (properties) => {
+      console.log(properties)
       const index = properties.nodes.pop();
-      console.log(this.res[index - 1])
+      const node = this.res[index - 1]
+      console.log(node)
+
+      if(node.value.type.includes("literal"))
+        return;
+
+      // TODO this.searchNode()
+
     });
+    this.status = "Sem processamento"
   }
 
   focus(){
@@ -87,38 +101,66 @@ export class ConexoesComponent implements OnInit {
   }
 
   search(id: number){
+    this.status = "Buscando resposta"
+    if(id == 0)
+      this.lastIndex = 0;
+
     this.dbpediaSparqlService.getSparQL(this.buildQuery()).subscribe((data) => {
-      const result = JSON.stringify(data)
-      this.res = data.results.bindings.filter( (obj) => obj.value["xml:lang"] == "en" || obj.value["xml:lang"] == undefined)
+
+      this.status = "Processando resposta"
+
+      let res = data.results.bindings.filter( (obj) => obj.value["xml:lang"] == "en" || obj.value["xml:lang"] == undefined)
       
-      const labelNode = this.res.find((obj) => obj.prop.value.split("/").pop().split("#").pop() == "label")
-      this.res.splice(this.res.indexOf(labelNode), 1)
+      const labelNode = res.find((obj) => obj.prop.value.split("/").pop().split("#").pop() == "label")
+      res.splice(res.indexOf(labelNode), 1)
 
-
-      const nodes = this.res.map((node, index) => {
-          const indexx = index + this.lastIndex + 1
+      let nodes = res.map((node, index) => {
+          const idx = index + this.lastIndex + 1
           const group = node.value.type.split("/").pop()
+          const label = node.value.value.split("/").pop().substring(0, 20)
           return {
-            id: indexx,
-            label: node.value.value.split("/").pop().substring(0, 20),
+            id: idx,
+            label: label == "" ? node.value.value.substring(0, 20) : label,
             group: group == "typed-literal" ? "literal" : group }
-        })
+      })
 
+      this.res = this.res.concat(res)
+      const oldLength = this.lastIndex;
+      this.lastIndex = this.res.length;
 
-        const edges = this.res.map((node, index) => {
-          const indexx = index + this.lastIndex + 1
+      let labelNodes = []
+      res.forEach((node, index) => {
+        const idx = index + this.lastIndex + 1
+        const label = node.prop.value.split("/").pop().split("#").pop()
+        if(labelNodes.indexOf(label) == -1)
+          labelNodes.push({ id: idx, label: label, group: "lableNodes" })
+      });
 
-          return {
-            from: id,
-            to: indexx,
-            label: node.prop.value.split("/").pop().split("#").pop()
-          }
-        })
+      this.res = this.res.concat(labelNodes)
+      res = res.concat(labelNodes)
+      nodes = nodes.concat(labelNodes)
 
-        if(id == 0)
-          nodes.push({ id: 0, label: labelNode.value.value.split("/").pop().substring(0, 15), group: "MAIN NODE" })
+      this.lastIndex = this.res.length;
 
-        this.initGraph(nodes, edges)
+      const edges = res.map((node, index) => {
+        const to = node.group == "lableNodes" ? id : labelNodes.find((no) => no.label == node.prop.value.split("/").pop().split("#").pop()).id;
+        const from = index + oldLength + 1
+        const resp  = {
+          from: from,
+          to: to,
+        }
+        console.log(resp)
+        return resp
+      })
+
+      this.edges = this.edges.concat(edges)
+
+      if(id == 0)
+        nodes.push({ id: 0, label: labelNode.value.value.split("/").pop().substring(0, 15), group: "MAIN NODE" })
+
+      this.nodes = this.nodes.concat(nodes)
+      this.status = "Desenhando grafo"
+      this.initGraph(nodes, edges)
     })
 
   }
