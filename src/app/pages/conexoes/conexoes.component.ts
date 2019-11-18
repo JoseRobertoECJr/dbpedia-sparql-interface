@@ -78,6 +78,13 @@ export class ConexoesComponent implements OnInit {
       // TODO this.searchNode()
 
     });
+
+    this.network.on('click', (properties) => {
+      console.log(properties)
+      const index = properties.nodes.pop();
+
+      this.zoomIn(index)
+    });
     this.status = "Sem processamento"
   }
 
@@ -85,9 +92,9 @@ export class ConexoesComponent implements OnInit {
     this.network.focus(0)
   }
 
-  zoomIn(){
+  zoomIn(index: number){
     const ficOp = {
-      nodes: ["0"],
+      nodes: [index.toString()],
       animation: false
     }
     this.network.fit(ficOp)
@@ -102,8 +109,12 @@ export class ConexoesComponent implements OnInit {
 
   search(id: number){
     this.status = "Buscando resposta"
-    if(id == 0)
+    if(id == 0){
       this.lastIndex = 0;
+      this.res = []
+      this.edges = []
+      this.nodes = []
+    }
 
     this.dbpediaSparqlService.getSparQL(this.buildQuery()).subscribe((data) => {
 
@@ -149,7 +160,6 @@ export class ConexoesComponent implements OnInit {
           from: from,
           to: to,
         }
-        console.log(resp)
         return resp
       })
 
