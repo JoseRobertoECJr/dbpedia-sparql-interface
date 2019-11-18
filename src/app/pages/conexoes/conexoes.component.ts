@@ -3,6 +3,7 @@ import { DbpediaSparqlService } from 'src/app/dbpedia-sparql.service';
 import { Network } from "vis";
 import { graphOptions } from "src/app/pages/conexoes/graph-options"
 import { findLast } from '@angular/compiler/src/directive_resolver';
+import { uniq } from "lodash"
 
 @Component({
   selector: 'app-conexoes',
@@ -72,6 +73,8 @@ export class ConexoesComponent implements OnInit {
       const node = this.res[index - 1]
       console.log(node)
 
+      if(!node)
+        return
       if(node.value.type.includes("literal"))
         return;
 
@@ -80,12 +83,14 @@ export class ConexoesComponent implements OnInit {
     });
 
     this.network.on('click', (properties) => {
-      console.log(properties)
       const index = properties.nodes.pop();
+      console.log(index)
 
-      this.zoomIn(index)
+      if(!index)
+        return
+
+        this.zoomIn(index)
     });
-    this.status = "Sem processamento"
   }
 
   focus(){
@@ -116,7 +121,7 @@ export class ConexoesComponent implements OnInit {
       this.nodes = []
     }
 
-    this.dbpediaSparqlService.getSparQL(this.buildQuery()).subscribe((data) => {
+    this.dbpediaSparqlService.getSparQL(this.buildQuery()).subscribe(async (data) => {
 
       this.status = "Processando resposta"
 
@@ -140,12 +145,14 @@ export class ConexoesComponent implements OnInit {
       this.lastIndex = this.res.length;
 
       let labelNodes = []
-      res.forEach((node, index) => {
+      
+      labelNodes = uniq(res.map((node) => node.prop.value.split("/").pop().split("#").pop()))
+
+      labelNodes = labelNodes.map((label, index) => {
         const idx = index + this.lastIndex + 1
-        const label = node.prop.value.split("/").pop().split("#").pop()
-        if(labelNodes.indexOf(label) == -1)
-          labelNodes.push({ id: idx, label: label, group: "lableNodes" })
-      });
+        return { id: idx, label: label, group: "lableNodes" }
+      })
+
 
       this.res = this.res.concat(labelNodes)
       res = res.concat(labelNodes)
