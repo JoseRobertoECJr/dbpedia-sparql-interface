@@ -1,1 +1,45 @@
-<p>infos works!</p>
+<div class="toolbar" role="banner">
+    <img
+        width="40"
+        alt="Angular Logo"
+        [src]="imagestr"
+    />
+    
+    <span routerLink="/" style="cursor: pointer;">Interface SparQL DBPedia</span>
+        
+</div>
+
+<div id="query-area">
+    <div class="inline">
+        <div class="inline label">Tipo</div>
+        <input [(ngModel)]="type" class="inline">
+    </div>
+    <div class="inline">
+        <div class="inline label">Label</div>
+        <input [(ngModel)]="label" class="inline">
+    </div>
+    <div class="inline">
+        <div class="inline label">Prop Filter (opcional)</div>
+        <input [(ngModel)]="prop" class="inline">
+    </div>
+    <div class="inline">
+        <button class="btn btn-primary" (click)="search(0)">BUSCAR</button>
+        <button class="btn" style="background-color: tomato">{{status}}</button>
+    </div>
+</div>
+
+<table>
+    <tr *ngFor="let ob of res">
+        <td>
+            <a *ngIf="ob.uri" [href]="ob.uri">{{ob.label}}</a>
+            <a *ngIf="!ob.uri">{{ob.label}}</a>
+        </td>
+        <td>
+            <div *ngFor="let node of ob.nodes">
+                <a *ngIf="node.value.type == 'uri'" [href]="node.value.value">{{node.value.value}}</a>
+                <a *ngIf="node.value.type == 'typed-literal'" [href]="node.value.datatype">{{node.value.value}}</a>
+                <a *ngIf="node.value.type == 'literal'">{{node.label}}</a>
+            </div>
+        </td>
+    </tr>
+</table>

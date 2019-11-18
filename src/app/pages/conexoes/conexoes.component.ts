@@ -4,6 +4,8 @@ import { Network } from "vis";
 import { graphOptions } from "src/app/pages/conexoes/graph-options"
 import { findLast } from '@angular/compiler/src/directive_resolver';
 import { uniq } from "lodash"
+import { imagestr } from "src/app/pages/imagestr"
+
 
 @Component({
   selector: 'app-conexoes',
@@ -11,6 +13,8 @@ import { uniq } from "lodash"
   styleUrls: ['./conexoes.component.css']
 })
 export class ConexoesComponent implements OnInit {
+
+  imagestr = imagestr
 
   status: string
   network: Network
@@ -28,7 +32,7 @@ export class ConexoesComponent implements OnInit {
   buildQuery(){
     let query =
       `
-        SELECT DISTINCT ?obj ?prop ?value WHERE {
+        SELECT DISTINCT ?prop ?value WHERE {
                         ?obj a dbo:${this.type};
                         rdfs:label ?name;
                         ?prop ?value.

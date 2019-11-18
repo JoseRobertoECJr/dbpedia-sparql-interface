@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { imagestr } from "src/app/pages/imagestr"
 
 @Component({
   selector: 'app-main',
@@ -7,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainComponent implements OnInit {
 
+  imagestr = imagestr
   title = 'Bem vindo à interface para DBPedia com consultas SparQL';
 
   constructor() { }
