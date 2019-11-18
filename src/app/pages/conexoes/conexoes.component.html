@@ -1,5 +1,31 @@
 <div id="mynetwork"></div>
 
 <div id="query-area">
-    <textarea (keydown.enter)="search(0)" [(ngModel)]='sparqlQuery'></textarea>
+    <div class="inline">
+        <div>
+            <div class="inline label">Tipo</div>
+            <input [(ngModel)]="type" class="inline">
+        </div>
+        <div>
+            <div class="inline label">Label</div>
+            <input [(ngModel)]="label" class="inline">
+        </div>
+    </div>
+    
+    <div class="inline">
+        <div>
+            Opcional:
+        </div>
+        <div>
+            <div class="inline label">Prop Filter</div>
+            <input [(ngModel)]="prop" class="inline">
+        </div>
+    </div>
+    <div class="inline">
+        <button class="btn btn-primary" (click)="search(0)">BUSCAR</button>
+    </div>
+    <div class="inline">
+        <button class="btn" (click)="zoomIn()">zoom in</button>
+        <button class="btn" (click)="zoomOut()">zoom out</button>
+    </div>
 </div>

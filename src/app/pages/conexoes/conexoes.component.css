@@ -1,6 +1,8 @@
 * {
     padding: 0px;
     margin: 0px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: large;
 }
 
 body {
@@ -23,5 +25,34 @@ body {
 textarea {
     resize: none;
     height: 100%;
-    width: 50%;
+    width: 100%;
  }
+
+ input{
+     border-width: 1px;
+     border-radius: 3px;
+     width: 55%;
+ }
+
+ .inline{
+    display: inline-block;
+ }
+
+ .btn{
+     border: none;
+    color: whitesmoke;
+    background-color: cornflowerblue;
+    padding: 5px 5px;
+    margin: 5px 5px;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+.btn-primary{
+    background-color: #2eb0a9;
+}
+
+.label{
+    width: 40%;
+    padding: 1%;
+}
