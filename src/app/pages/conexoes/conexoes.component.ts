@@ -176,7 +176,7 @@ export class ConexoesComponent implements OnInit {
       this.edges = this.edges.concat(edges)
 
       if(id == 0)
-        nodes.push({ id: 0, label: labelNode.value.value.split("/").pop().substring(0, 15), group: "MAIN NODE" })
+        nodes.push({ id: 0, label: this.label, group: "MAIN NODE" })
 
       this.nodes = this.nodes.concat(nodes)
       this.status = "Desenhando grafo"

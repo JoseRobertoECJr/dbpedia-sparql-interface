@@ -38,3 +38,24 @@
 .btn-primary{
     background-color: #2eb0a9;
 }
+
+.gray-back{
+    background-color: #ebebeb;
+}
+
+a{
+    text-decoration: none;
+}
+
+td{
+    vertical-align: text-top;
+    padding: 5px;
+}
+
+table{
+    width: 66%;
+}
+
+tr{
+    background-color: #f5f5f5;
+}
